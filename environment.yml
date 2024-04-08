@@ -1,0 +1,13 @@
+name: monte carlo
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - jupyterlab==4.0.12
+  - pandas
+  - numpy
+  - xlrd
+  - matplotlib
+  - python=3.9
+  - openpyxl
+prefix: /Users/lucyliu/miniconda3/envs/test_env
