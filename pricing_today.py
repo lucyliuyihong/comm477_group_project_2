@@ -37,19 +37,8 @@ def monte_carlo_simulation(S0, T, r, sigma, B, M, N):
     present_value = np.exp(-r * T) * np.mean(payoffs)
     return present_value
 
-# Parameters
-# maturity date = 19-Dec-25
-# issue date = 20-Dec-19
-# current date = 20-Mar-24 for simplicity
-S0 = 100.0  # Initial underlying asset price
-T = 1.75    # Time to maturity in years (1 year and 9 months)
-r = 0.035  # Risk-free interest rate
-B = 80.0    # Barrier level
-M = 10000   # Number of simulation paths
-N = 252     # Number of time steps
-
 # Load underlying asset's historical price data
-file_path = './S&P:TSX Composite Low Volatility Index.xls'
+file_path = './S&P:TSX Composite Low Volatility Index_20230405-20240405.xls'
 historical_data = pd.read_excel(file_path)
 
 # Convert the 'Date' column to datetime
@@ -70,6 +59,43 @@ daily_volatility = historical_data['Daily Returns'].std(skipna=True)
 # Annuliaze the volatility
 annualized_volatility = daily_volatility * np.sqrt(252)  # Assuming 252 trading days in a year
 
+# Parameters
+# maturity date = 19-Dec-25
+# issue date = 20-Dec-19
+# current date = 20-Mar-24 for simplicity
+S0 = 100.0  # Initial underlying asset price
+T = 1.75    # Time to maturity in years (1 year and 9 months)
+r = 0.035  # Risk-free interest rate
+B = 80.0    # Barrier level
+M = 10000   # Number of simulation paths
+N = 252     # Number of time steps
+sigma = annualized_volatility
+
 # Perform the Monte Carlo simulation
-fair_value = monte_carlo_simulation(S0, T, r, annualized_volatility, B, M, N)
-fair_value
+fair_value_today = monte_carlo_simulation(S0, T, r, sigma, B, M, N)
+fair_value_today
+
+
+# Plot the annualized rolling volatility
+import matplotlib.pyplot as plt
+
+# Assuming 'historical_data' is a pandas DataFrame with a 'Price' column and a 'Date' index
+historical_data['Daily Returns'] = historical_data['Price'].pct_change().dropna()
+
+# Set the 'Date' column as the index
+historical_data.set_index('Date', inplace=True)
+
+# Calculate the rolling standard deviation of the daily returns
+window_size = 30  # Adjust the window size as needed
+historical_data['Rolling Volatility'] = historical_data['Daily Returns'].rolling(window=window_size).std()
+
+# Annualize the volatility
+historical_data['Annualized Volatility'] = historical_data['Rolling Volatility'] * (252 ** 0.5)
+
+# Plot the annualized rolling volatility
+plt.figure(figsize=(14, 7))
+plt.plot(historical_data.index, historical_data['Annualized Volatility'])
+plt.title('Annualized Rolling Volatility For the Time Period April 04, 2023 to April 04, 2024')
+plt.xlabel('Date')
+plt.ylabel('Annualized Volatility')
+plt.show()
