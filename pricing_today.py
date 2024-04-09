@@ -65,11 +65,11 @@ annualized_volatility = daily_volatility * np.sqrt(252)  # Assuming 252 trading 
 # current date = 20-Mar-24 for simplicity
 S0 = 100.0  # Initial underlying asset price
 T = 1.75    # Time to maturity in years (1 year and 9 months)
-r = 0.035  # Risk-free interest rate
+r = 0.035  # Assumed constant risk-free interest rate
 B = 80.0    # Barrier level
 M = 10000   # Number of simulation paths
 N = 252     # Number of time steps
-sigma = annualized_volatility
+sigma = annualized_volatility # Assumed constant volatility
 
 # Perform the Monte Carlo simulation
 fair_value_today = monte_carlo_simulation(S0, T, r, sigma, B, M, N)

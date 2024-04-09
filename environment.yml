@@ -1,4 +1,4 @@
-name: monte carlo
+name: monte_carlo
 channels:
   - conda-forge
   - defaults
